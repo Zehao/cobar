@@ -28,6 +28,12 @@ public class NameableExecutor extends ThreadPoolExecutor {
     protected String name;
 
     public NameableExecutor(String name, int size, BlockingQueue<Runnable> queue, ThreadFactory factory) {
+        /**
+         * By setting corePoolSize and maximum PoolSize the same, you create a fixed-size thread pool.
+         * 
+         * Using a value of {@code Long.MAX_VALUE} {@link TimeUnit#NANOSECONDS} effectively
+         * disables idle threads from ever terminating prior to shut down.
+         */
         super(size, size, Long.MAX_VALUE, TimeUnit.NANOSECONDS, queue, factory);
         this.name = name;
     }

@@ -71,6 +71,7 @@ public final class NIOAcceptor extends Thread {
         final Selector selector = this.selector;
         for (;;) {
             ++acceptCount;
+            LOGGER.info("acceptCount:" + acceptCount);
             try {
                 selector.select(1000L);
                 Set<SelectionKey> keys = selector.selectedKeys();

@@ -71,6 +71,9 @@ public class CobarServer {
         SystemConfig system = config.getSystem();
         MySQLLexer.setCStyleCommentVersion(system.getParserCommentVersion());
         this.timer = new Timer(NAME + "Timer", true);
+        /**
+         * initExecutor/timerExecutor/managerExecutor are all set to DEFAULT_PROCESSORS
+         */
         this.initExecutor = ExecutorUtil.create("InitExecutor", system.getInitExecutor());
         this.timerExecutor = ExecutorUtil.create("TimerExecutor", system.getTimerExecutor());
         this.managerExecutor = ExecutorUtil.create("ManagerExecutor", system.getManagerExecutor());

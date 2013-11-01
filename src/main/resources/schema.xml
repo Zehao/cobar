@@ -19,6 +19,7 @@
 
   <!-- schema定义 -->
   <schema name="dbtest" dataNode="dnTest1">
+    <table name="tb1" dataNode="dnTest1" rule="rule1" />
     <table name="tb2" dataNode="dnTest2,dnTest3" rule="rule1" />
   </schema>
 
@@ -42,12 +43,12 @@
   <!-- 数据源定义，数据源是一个具体的后端数据连接的表示。-->
   <dataSource name="dsTest" type="mysql">
     <property name="location">
-      <location>192.168.0.1:3306/dbtest1</location>
-      <location>192.168.0.1:3306/dbtest2</location>
-      <location>192.168.0.1:3306/dbtest3</location>
+      <location>192.168.6.60:5029/dbtest1</location>
+      <location>192.168.6.60:5029/dbtest2</location>
+      <location>192.168.6.60:5029/dbtest3</location>
     </property>
-    <property name="user">test</property>
-    <property name="password"></property>
+    <property name="user">root</property>
+    <property name="password">hantele</property>
     <property name="sqlMode">STRICT_TRANS_TABLES</property>
   </dataSource>
 

@@ -41,8 +41,7 @@ public final class NIOAcceptor extends Thread {
     private final FrontendConnectionFactory factory;
     private NIOProcessor[] processors;
     private int nextProcessor;
-    private long acceptCount;
-
+    
     public NIOAcceptor(String name, int port, FrontendConnectionFactory factory) throws IOException {
         LOGGER.info("Init NIOAcceptor :" + name +" " + port);
         super.setName(name);
@@ -59,9 +58,6 @@ public final class NIOAcceptor extends Thread {
         return port;
     }
 
-    public long getAcceptCount() {
-        return acceptCount;
-    }
 
     public void setProcessors(NIOProcessor[] processors) {
         this.processors = processors;
@@ -71,8 +67,6 @@ public final class NIOAcceptor extends Thread {
     public void run() {
         final Selector selector = this.selector;
         for (;;) {
-            ++acceptCount;
-            LOGGER.info("acceptCount:" + acceptCount);
             try {
                 selector.select(1000L);
                 Set<SelectionKey> keys = selector.selectedKeys();

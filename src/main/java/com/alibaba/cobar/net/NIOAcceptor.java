@@ -44,6 +44,7 @@ public final class NIOAcceptor extends Thread {
     private long acceptCount;
 
     public NIOAcceptor(String name, int port, FrontendConnectionFactory factory) throws IOException {
+        LOGGER.info("Init NIOAcceptor :" + name +" " + port);
         super.setName(name);
         this.port = port;
         this.selector = Selector.open();

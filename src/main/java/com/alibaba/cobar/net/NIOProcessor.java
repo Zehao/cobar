@@ -120,10 +120,6 @@ public final class NIOProcessor {
         netOutBytes += bytes;
     }
 
-    public long getReactCount() {
-        return reactor.getReactCount();
-    }
-
     public void addFrontend(FrontendConnection c) {
         frontends.put(c.getId(), c);
     }

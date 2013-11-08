@@ -115,7 +115,11 @@ public final class ShowProcessor {
         row.add(processor.getName().getBytes());
         row.add(LongUtil.toBytes(processor.getNetInBytes()));
         row.add(LongUtil.toBytes(processor.getNetOutBytes()));
-        row.add(LongUtil.toBytes(processor.getReactCount()));
+        /**
+         * The reactCount from processor is wrong.
+         * Bug fixed at 2013/11/9 0:58 by ZehaoJin
+         */
+//        row.add(LongUtil.toBytes(processor.getReactCount()));
         row.add(IntegerUtil.toBytes(processor.getRegisterQueueSize()));
         row.add(IntegerUtil.toBytes(processor.getWriteQueueSize()));
         row.add(IntegerUtil.toBytes(processor.getBufferPool().size()));

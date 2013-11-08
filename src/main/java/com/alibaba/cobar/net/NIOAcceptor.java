@@ -43,7 +43,7 @@ public final class NIOAcceptor extends Thread {
     private int nextProcessor;
     
     public NIOAcceptor(String name, int port, FrontendConnectionFactory factory) throws IOException {
-        LOGGER.info("Init NIOAcceptor :" + name +" " + port);
+        LOGGER.info("Init NIOAcceptor :" + name +",at port:" + port);
         super.setName(name);
         this.port = port;
         this.selector = Selector.open();
@@ -86,6 +86,22 @@ public final class NIOAcceptor extends Thread {
             }
         }
     }
+    
+    /**
+     * accept过程：
+     * 1. 通过FrontendConnectionFactory得到一个具体的FrontendConnection c，设置此连接的socket的属性和
+     *      c的packetHeaderSize等信息以及一个用来向此写入数据的BufferQueue。
+     * 
+     * 2. 分配一个NIOProcessor用来处理此连接，并从NIOProcessor中获得一个用来读数据的BufferPool分配的ByteBuffer。
+     * 
+     * 3. NIOProcessor向其事件反应器reactor注册此连接。reactor有专门处理读写的2个线程R/W，reactor
+     *       首先将此NIOConnection加入到registerQueue中，唤醒R线程中没有注册任何事件的Selector。
+     * 
+     * 4.  R从阻塞队列中的到此NIOConnection c，c向R中的selector注册读事件，同时向socket中写入mysql协议的握手数据包
+     *   （NIOAcceptor中只注册了accept事件），并将自己（NIOConnection）作为attachment放入selector中。（未注册写事件）
+     * 
+     * 
+     */
 
     private void accept() {
         SocketChannel channel = null;

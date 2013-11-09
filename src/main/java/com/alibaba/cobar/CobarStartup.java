@@ -17,7 +17,10 @@ package com.alibaba.cobar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 import org.apache.log4j.Logger;
 
 

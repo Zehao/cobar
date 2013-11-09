@@ -119,6 +119,19 @@ public final class NIOReactor {
                 }
             }
         }
+        /**
+         * read/write过程。
+         * 
+         * 首先 验证过程：
+         * 1. 此FrontendConnection在register时绑定了一个FrontendAuthenticator，由FrontendAuthenticator来handle第一次
+         *      接收到的client数据包。
+         * 2. 验证完用户名，密码，schema后，将此FrontendConnection的handler改为FrontendCommandHandler，FrontendAuthenticator
+         *      的作用到此为止。同时向socket写入OK Packet。
+         * 
+         * 开始命令的接收与处理。
+         * 
+         * @param c 
+         */
 
         private void read(NIOConnection c) {
             try {

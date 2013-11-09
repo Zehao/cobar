@@ -35,6 +35,7 @@ import com.alibaba.cobar.util.TimeUtil;
  * @author xianmao.hexm
  */
 public abstract class AbstractConnection implements NIOConnection {
+
     private static final int OP_NOT_READ = ~SelectionKey.OP_READ;
     private static final int OP_NOT_WRITE = ~SelectionKey.OP_WRITE;
 
@@ -201,6 +202,20 @@ public abstract class AbstractConnection implements NIOConnection {
                 }
                 break;
             }
+        }
+    }
+
+    /**
+     * 获取数据包长度，默认是MySQL数据包，其他数据包重载此方法。
+     */
+    protected int getPacketLength(ByteBuffer buffer, int offset) {
+        if (buffer.position() < offset + packetHeaderSize) {
+            return -1;
+        } else {
+            int length = buffer.get(offset) & 0xff;
+            length |= (buffer.get(++offset) & 0xff) << 8;
+            length |= (buffer.get(++offset) & 0xff) << 16;
+            return length + packetHeaderSize;
         }
     }
 
@@ -372,20 +387,6 @@ public abstract class AbstractConnection implements NIOConnection {
         // 回收发送缓存
         while ((buffer = writeQueue.poll()) != null) {
             pool.recycle(buffer);
-        }
-    }
-
-    /**
-     * 获取数据包长度，默认是MySQL数据包，其他数据包重载此方法。
-     */
-    protected int getPacketLength(ByteBuffer buffer, int offset) {
-        if (buffer.position() < offset + packetHeaderSize) {
-            return -1;
-        } else {
-            int length = buffer.get(offset) & 0xff;
-            length |= (buffer.get(++offset) & 0xff) << 8;
-            length |= (buffer.get(++offset) & 0xff) << 16;
-            return length + packetHeaderSize;
         }
     }
 

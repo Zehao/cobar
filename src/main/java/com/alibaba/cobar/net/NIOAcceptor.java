@@ -90,7 +90,7 @@ public final class NIOAcceptor extends Thread {
     /**
      * accept过程：
      * 1. 通过FrontendConnectionFactory得到一个具体的FrontendConnection c，设置此连接的socket的属性和
-     *      c的packetHeaderSize等信息以及一个用来向此写入数据的BufferQueue。
+     *      c的packetHeaderSize等信息以及一个用来向此写入数据的BufferQueue。还有一个FrontendAuthenticator。
      * 
      * 2. 分配一个NIOProcessor用来处理此连接，并从NIOProcessor中获得一个用来读数据的BufferPool分配的ByteBuffer。
      * 

@@ -119,7 +119,6 @@ public final class NIOReactor {
                 }
             }
         }
-<<<<<<< HEAD
         /**
          * read/write过程。
          * 
@@ -133,8 +132,6 @@ public final class NIOReactor {
          * 
          * @param c 
          */
-=======
->>>>>>> origin/master
 
         private void read(NIOConnection c) {
             try {

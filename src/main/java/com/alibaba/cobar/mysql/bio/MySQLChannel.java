@@ -325,7 +325,11 @@ public final class MySQLChannel implements Channel {
 
         // 设置通道参数
         this.threadId = hsp.threadId;
-        int ci = hsp.serverCharsetIndex & 0xff;
+        //int ci = hsp.serverCharsetIndex & 0xff;
+        /**
+         * 全部采用UTF8编码.
+         */
+        int ci = 33;
         if ((charset = CharsetUtil.getCharset(ci)) != null) {
             this.charsetIndex = ci;
         } else {

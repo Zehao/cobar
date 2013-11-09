@@ -38,11 +38,12 @@ import com.alibaba.cobar.net.mysql.HandshakePacket;
 import com.alibaba.cobar.net.mysql.OkPacket;
 import com.alibaba.cobar.util.RandomUtil;
 import com.alibaba.cobar.util.TimeUtil;
+import java.io.EOFException;
 
 /**
  * @author xianmao.hexm
  */
-public abstract class FrontendConnection extends AbstractConnection {
+public class FrontendConnection extends AbstractConnection {
     private static final Logger LOGGER = Logger.getLogger(FrontendConnection.class);
 
     protected long id;
@@ -377,6 +378,32 @@ public abstract class FrontendConnection extends AbstractConnection {
         });
     }
 
+    @Override
+    public void error(int errCode, Throwable t) {
+        // 根据异常类型和信息，选择日志输出级别。
+        if (t instanceof EOFException) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(toString(), t);
+            }
+        } else if (isConnectionReset(t)) {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info(toString(), t);
+            }
+        } else {
+            LOGGER.warn(toString(), t);
+        }
+
+        // 异常返回码处理
+        switch (errCode) {
+        case ErrorCode.ERR_HANDLE_DATA:
+            String msg = t.getMessage();
+            writeErrMessage(ErrorCode.ER_YES, msg == null ? t.getClass().getSimpleName() : msg);
+            break;
+        default:
+            close();
+        }
+    }
+    
     protected int getServerCapabilities() {
         int flag = 0;
         flag |= Capabilities.CLIENT_LONG_PASSWORD;

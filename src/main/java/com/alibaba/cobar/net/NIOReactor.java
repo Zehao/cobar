@@ -58,9 +58,6 @@ public final class NIOReactor {
         return reactorR.registerQueue;
     }
 
-    final long getReactCount() {
-        return reactorR.reactCount;
-    }
 
     final void postWrite(NIOConnection c) {
         reactorW.writeQueue.offer(c);
@@ -73,7 +70,6 @@ public final class NIOReactor {
     private final class R implements Runnable {
         private final Selector selector;
         private final BlockingQueue<NIOConnection> registerQueue;
-        private long reactCount;
 
         private R() throws IOException {
             this.selector = Selector.open();
@@ -84,10 +80,9 @@ public final class NIOReactor {
         public void run() {
             final Selector selector = this.selector;
             for (;;) {
-                ++reactCount;
                 try {
                     selector.select(1000L);
-                    register(selector);
+                    register();
                     Set<SelectionKey> keys = selector.selectedKeys();
                     try {
                         for (SelectionKey key : keys) {
@@ -114,7 +109,7 @@ public final class NIOReactor {
             }
         }
 
-        private void register(Selector selector) {
+        private void register() {
             NIOConnection c = null;
             while ((c = registerQueue.poll()) != null) {
                 try {

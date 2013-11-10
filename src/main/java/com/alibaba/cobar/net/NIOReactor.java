@@ -28,10 +28,11 @@ import com.alibaba.cobar.config.ErrorCode;
 
 /**
  * 网络事件反应器
- * 
+ *
  * @author xianmao.hexm
  */
 public final class NIOReactor {
+
     private static final Logger LOGGER = Logger.getLogger(NIOReactor.class);
 
     private final String name;
@@ -58,7 +59,6 @@ public final class NIOReactor {
         return reactorR.registerQueue;
     }
 
-
     final void postWrite(NIOConnection c) {
         reactorW.writeQueue.offer(c);
     }
@@ -67,7 +67,25 @@ public final class NIOReactor {
         return reactorW.writeQueue;
     }
 
+    /**
+     * read/write过程。
+     *
+     * 首先 验证过程： 
+     * 1.
+     * 此FrontendConnection在register时绑定了一个FrontendAuthenticator，由FrontendAuthenticator来handle第一次
+     * 接收到的client数据包。 
+     * 2.
+     * 验证完用户名，密码，schema后，将此FrontendConnection的handler改为FrontendCommandHandler，FrontendAuthenticator
+     * 的作用到此为止。同时向socket写入OK Packet。
+     * 3.
+     * 在写入ok包的时候，c会将包保存在writeQueue上，同时向reactor的W线程的阻塞队列中加入此自己。 
+     * 4.
+     * W线程从阻塞队列中取出c，执行c的writeByQueue()。 
+     * 5.
+     * 开始命令的接收与处理。
+     */
     private final class R implements Runnable {
+
         private final Selector selector;
         private final BlockingQueue<NIOConnection> registerQueue;
 
@@ -119,19 +137,6 @@ public final class NIOReactor {
                 }
             }
         }
-        /**
-         * read/write过程。
-         * 
-         * 首先 验证过程：
-         * 1. 此FrontendConnection在register时绑定了一个FrontendAuthenticator，由FrontendAuthenticator来handle第一次
-         *      接收到的client数据包。
-         * 2. 验证完用户名，密码，schema后，将此FrontendConnection的handler改为FrontendCommandHandler，FrontendAuthenticator
-         *      的作用到此为止。同时向socket写入OK Packet。
-         * 
-         * 开始命令的接收与处理。
-         * 
-         * @param c 
-         */
 
         private void read(NIOConnection c) {
             try {
@@ -143,6 +148,7 @@ public final class NIOReactor {
 
         private void write(NIOConnection c) {
             try {
+                LOGGER.info("write by event");
                 c.writeByEvent();
             } catch (Throwable e) {
                 c.error(ErrorCode.ERR_WRITE_BY_EVENT, e);
@@ -151,6 +157,7 @@ public final class NIOReactor {
     }
 
     private final class W implements Runnable {
+
         private final BlockingQueue<NIOConnection> writeQueue;
 
         private W() {
@@ -173,6 +180,7 @@ public final class NIOReactor {
 
         private void write(NIOConnection c) {
             try {
+                LOGGER.info("write by queue");
                 c.writeByQueue();
             } catch (Throwable e) {
                 c.error(ErrorCode.ERR_WRITE_BY_QUEUE, e);

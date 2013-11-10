@@ -457,6 +457,7 @@ public abstract class AbstractConnection implements NIOConnection {
         // 写出发送队列中的数据块
         if ((buffer = writeQueue.poll()) != null) {
             // 如果是一块未使用过的buffer，则执行关闭连接。
+            //出现在quit处。
             if (buffer.position() == 0) {
                 processor.getBufferPool().recycle(buffer);
                 close();

@@ -38,7 +38,6 @@ public final class NIOConnector extends Thread {
     private final BlockingQueue<BackendConnection> connectQueue;
     private NIOProcessor[] processors;
     private int nextProcessor;
-    private long connectCount;
 
     public NIOConnector(String name) throws IOException {
         super.setName(name);
@@ -47,9 +46,6 @@ public final class NIOConnector extends Thread {
         this.connectQueue = new LinkedBlockingQueue<BackendConnection>();
     }
 
-    public long getConnectCount() {
-        return connectCount;
-    }
 
     public void setProcessors(NIOProcessor[] processors) {
         this.processors = processors;
@@ -64,7 +60,6 @@ public final class NIOConnector extends Thread {
     public void run() {
         final Selector selector = this.selector;
         for (;;) {
-            ++connectCount;
             try {
                 selector.select(1000L);
                 connect(selector);

@@ -50,7 +50,7 @@ public class BinaryPacket extends MySQLPacket {
         buffer = c.checkWriteBuffer(buffer, c.getPacketHeaderSize());
         BufferUtil.writeUB3(buffer, calcPacketSize());
         buffer.put(packetId);
-        buffer = c.writeToBuffer(data, buffer);
+        buffer = c.writeToBufferWithRemaining(data, buffer);
         return buffer;
     }
 

@@ -99,7 +99,7 @@ public final class RollbackExecutor extends NodeExecutor {
         final int initNodeCount = target.size();
         if (initNodeCount <= 0) {
             ByteBuffer buffer = source.allocate();
-            source.write(source.writeToBuffer(OkPacket.OK, buffer));
+            source.writeAllToBuffer(OkPacket.OK, buffer);
             return;
         }
 

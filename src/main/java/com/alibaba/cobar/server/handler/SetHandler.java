@@ -50,7 +50,7 @@ public final class SetHandler {
         switch (rs & 0xff) {
         case AUTOCOMMIT_ON:
             if (c.isAutocommit()) {
-                c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+                c.writeAllToBuffer(OkPacket.OK, c.allocate());
             } else {
                 c.commit();
                 c.setAutocommit(true);
@@ -60,33 +60,33 @@ public final class SetHandler {
             if (c.isAutocommit()) {
                 c.setAutocommit(false);
             }
-            c.write(c.writeToBuffer(AC_OFF, c.allocate()));
+            c.writeAllToBuffer(AC_OFF, c.allocate());
             break;
         }
         case TX_READ_UNCOMMITTED: {
             c.setTxIsolation(Isolations.READ_UNCOMMITTED);
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
             break;
         }
         case TX_READ_COMMITTED: {
             c.setTxIsolation(Isolations.READ_COMMITTED);
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
             break;
         }
         case TX_REPEATED_READ: {
             c.setTxIsolation(Isolations.REPEATED_READ);
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
             break;
         }
         case TX_SERIALIZABLE: {
             c.setTxIsolation(Isolations.SERIALIZABLE);
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
             break;
         }
         case NAMES:
             String charset = stmt.substring(rs >>> 8).trim();
             if (c.setCharset(charset)) {
-                c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+                c.writeAllToBuffer(OkPacket.OK, c.allocate());
             } else {
                 c.writeErrMessage(ErrorCode.ER_UNKNOWN_CHARACTER_SET, "Unknown charset '" + charset + "'");
             }
@@ -99,7 +99,7 @@ public final class SetHandler {
         default:
             StringBuilder s = new StringBuilder();
             logger.warn(s.append(c).append(stmt).append(" is not executed").toString());
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         }
     }
 

@@ -39,6 +39,7 @@ import com.alibaba.cobar.util.StringUtil;
  * @author <a href="mailto:shuo.qius@alibaba-inc.com">QIU Shuo</a>
  */
 public class SingleNodeHandler implements ResponseHandler, Terminatable {
+
     private final RouteResultsetNode route;
     private final NonBlockingSession session;
     private byte packetId;
@@ -200,8 +201,7 @@ public class SingleNodeHandler implements ResponseHandler, Terminatable {
             OkPacket ok = new OkPacket();
             ok.read(data);
             source.setLastInsertId(ok.insertId);
-            buffer = source.writeToBuffer(data, buffer);
-            source.write(buffer);
+            source.writeAllToBuffer(data, buffer);
         }
     }
 
@@ -214,8 +214,7 @@ public class SingleNodeHandler implements ResponseHandler, Terminatable {
             session.clearConnections();
         }
         endRunning();
-        buffer = source.writeToBuffer(eof, buffer);
-        source.write(buffer);
+        source.writeAllToBuffer(eof, buffer);
     }
 
     @Override
@@ -223,20 +222,19 @@ public class SingleNodeHandler implements ResponseHandler, Terminatable {
         ServerConnection source = session.getSource();
         buffer = session.getSource().allocate();
         ++packetId;
-        buffer = source.writeToBuffer(header, buffer);
+        buffer = source.writeToBufferWithRemaining(header, buffer);
         for (int i = 0, len = fields.size(); i < len; ++i) {
             ++packetId;
-            buffer = source.writeToBuffer(fields.get(i), buffer);
+            buffer = source.writeToBufferWithRemaining(fields.get(i), buffer);
         }
         ++packetId;
-        buffer = source.writeToBuffer(eof, buffer);
-        source.write(buffer);
+        source.writeAllToBuffer(eof, buffer);
     }
 
     @Override
     public void rowResponse(byte[] row, MySQLConnection conn) {
         ++packetId;
-        buffer = session.getSource().writeToBuffer(row, buffer);
+        buffer = session.getSource().writeToBufferWithRemaining(row, buffer);
     }
 
 }

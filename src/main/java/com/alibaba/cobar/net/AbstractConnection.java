@@ -207,8 +207,7 @@ public abstract class AbstractConnection implements NIOConnection {
 
     public void write(byte[] data) {
         ByteBuffer buffer = allocate();
-        buffer = writeToBuffer(data, buffer);
-        write(buffer);
+        writeAllToBuffer(data, buffer);
     }
 
     @Override
@@ -313,7 +312,28 @@ public abstract class AbstractConnection implements NIOConnection {
     /**
      * 把数据写到给定的缓存中，如果满了则提交当前缓存并申请新的缓存。
      */
-    public ByteBuffer writeToBuffer(byte[] src, ByteBuffer buffer) {
+    public void writeAllToBuffer(byte[] src, ByteBuffer buffer) {
+        int offset = 0;
+        int length = src.length;
+        int remaining = buffer.remaining();
+        while (length > 0) {
+            if (remaining >= length) {
+                buffer.put(src, offset, length);
+                write(buffer);
+                break;
+            } else {
+                buffer.put(src, offset, remaining);
+                write(buffer);
+                buffer = allocate();
+                offset += remaining;
+                length -= remaining;
+                remaining = buffer.remaining();
+                continue;
+            }
+        }
+    }
+
+    public ByteBuffer writeToBufferWithRemaining(byte[] src, ByteBuffer buffer) {
         int offset = 0;
         int length = src.length;
         int remaining = buffer.remaining();
@@ -324,7 +344,7 @@ public abstract class AbstractConnection implements NIOConnection {
             } else {
                 buffer.put(src, offset, remaining);
                 write(buffer);
-                buffer = processor.getBufferPool().allocate();
+                buffer = allocate();
                 offset += remaining;
                 length -= remaining;
                 remaining = buffer.remaining();

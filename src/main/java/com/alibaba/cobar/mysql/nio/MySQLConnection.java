@@ -405,7 +405,7 @@ public class MySQLConnection extends BackendConnection {
         if (isQuit.compareAndSet(false, true) && !isClosed()) {
             if (isAuthenticated) {
                 // QS_TODO check
-                write(writeToBuffer(QuitPacket.QUIT, allocate()));
+                writeAllToBuffer(QuitPacket.QUIT, allocate());
                 write(processor.getBufferPool().allocate());
             } else {
                 close();

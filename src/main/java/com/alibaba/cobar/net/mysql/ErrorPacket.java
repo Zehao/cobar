@@ -86,7 +86,7 @@ public class ErrorPacket extends MySQLPacket {
         buffer.put(mark);
         buffer.put(sqlState);
         if (message != null) {
-            buffer = c.writeToBuffer(message, buffer);
+            buffer = c.writeToBufferWithRemaining(message, buffer);
         }
         return buffer;
     }
@@ -100,7 +100,7 @@ public class ErrorPacket extends MySQLPacket {
         buffer.put(mark);
         buffer.put(sqlState);
         if (message != null) {
-            buffer = c.writeToBuffer(message, buffer);
+            buffer = c.writeToBufferWithRemaining(message, buffer);
         }
         c.write(buffer);
     }

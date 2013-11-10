@@ -36,7 +36,7 @@ public class ClearSlow {
         MySQLDataSource ds = null;
         if (dn != null && (ds = dn.getSource()) != null) {
             ds.getSqlRecorder().clear();
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         } else {
             c.writeErrMessage(ErrorCode.ER_YES, "Invalid DataNode:" + name);
         }
@@ -54,7 +54,7 @@ public class ClearSlow {
                     ds.getSqlRecorder().clear();
                 }
             }
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         } else {
             c.writeErrMessage(ErrorCode.ER_YES, "Invalid Schema:" + name);
         }

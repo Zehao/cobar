@@ -47,7 +47,7 @@ public class CharacterSet {
     private static void oneSetResponse(String stmt, ServerConnection c, int rs) {
         if ((rs & 0xff) == CHARACTER_SET_CLIENT) {
             /* 忽略client属性设置 */
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         } else {
             String charset = stmt.substring(rs >>> 8).trim();
             if (charset.endsWith(";")) {
@@ -132,13 +132,13 @@ public class CharacterSet {
     private static void setCharset(String charset, ServerConnection c) {
         if ("null".equalsIgnoreCase(charset)) {
             /* 忽略字符集为null的属性设置 */
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         } else if (c.setCharset(charset)) {
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         } else {
             try {
                 if (c.setCharsetIndex(Integer.parseInt(charset))) {
-                    c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+                    c.writeAllToBuffer(OkPacket.OK, c.allocate());
                 } else {
                     c.writeErrMessage(ErrorCode.ER_UNKNOWN_CHARACTER_SET, "Unknown charset :" + charset);
                 }

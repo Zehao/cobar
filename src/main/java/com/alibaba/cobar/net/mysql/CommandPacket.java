@@ -107,8 +107,7 @@ public class CommandPacket extends MySQLPacket {
         BufferUtil.writeUB3(buffer, calcPacketSize());
         buffer.put(packetId);
         buffer.put(command);
-        buffer = c.writeToBuffer(arg, buffer);
-        c.write(buffer);
+        c.writeAllToBuffer(arg, buffer);
     }
 
     @Override

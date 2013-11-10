@@ -82,7 +82,7 @@ public class RowDataPacket extends MySQLPacket {
             } else {
                 bb = c.checkWriteBuffer(bb, BufferUtil.getLength(fv.length));
                 BufferUtil.writeLength(bb, fv.length);
-                bb = c.writeToBuffer(fv, bb);
+                bb = c.writeToBufferWithRemaining(fv, bb);
             }
         }
         return bb;

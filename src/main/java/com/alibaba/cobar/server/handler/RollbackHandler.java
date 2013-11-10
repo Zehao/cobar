@@ -27,7 +27,7 @@ public final class RollbackHandler {
 
     public static void handle(String stmt, ServerConnection c) {
         ByteBuffer buffer = c.allocate();
-        c.write(c.writeToBuffer(OkPacket.OK, buffer));
+        c.writeAllToBuffer(OkPacket.OK, buffer);
     }
 
 }

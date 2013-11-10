@@ -52,6 +52,7 @@ import com.alibaba.cobar.server.parser.ServerParse;
  * @author <a href="mailto:shuo.qius@alibaba-inc.com">QIU Shuo</a>
  */
 public class NonBlockingSession implements Session {
+
     private static final Logger LOGGER = Logger.getLogger(NonBlockingSession.class);
 
     private final ServerConnection source;
@@ -123,8 +124,7 @@ public class NonBlockingSession implements Session {
         final int initCount = target.size();
         if (initCount <= 0) {
             ByteBuffer buffer = source.allocate();
-            buffer = source.writeToBuffer(OkPacket.OK, buffer);
-            source.write(buffer);
+            source.writeAllToBuffer(OkPacket.OK, buffer);
             return;
         }
         commitHandler = new CommitNodeHandler(this);
@@ -135,8 +135,7 @@ public class NonBlockingSession implements Session {
         final int initCount = target.size();
         if (initCount <= 0) {
             ByteBuffer buffer = source.allocate();
-            buffer = source.writeToBuffer(OkPacket.OK, buffer);
-            source.write(buffer);
+            source.writeAllToBuffer(OkPacket.OK, buffer);
             return;
         }
         rollbackHandler = new RollbackNodeHandler(this);
@@ -228,6 +227,7 @@ public class NonBlockingSession implements Session {
     }
 
     private static class Terminator {
+
         private LinkedList<Terminatable> list = new LinkedList<Terminatable>();
         private Iterator<Terminatable> iter;
 
@@ -322,13 +322,13 @@ public class NonBlockingSession implements Session {
 
     private static boolean isModifySQL(int type) {
         switch (type) {
-        case ServerParse.INSERT:
-        case ServerParse.DELETE:
-        case ServerParse.UPDATE:
-        case ServerParse.REPLACE:
-            return true;
-        default:
-            return false;
+            case ServerParse.INSERT:
+            case ServerParse.DELETE:
+            case ServerParse.UPDATE:
+            case ServerParse.REPLACE:
+                return true;
+            default:
+                return false;
         }
     }
 

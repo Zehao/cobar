@@ -163,7 +163,7 @@ public class MySQLDetector extends BackendConnection {
     public void quit() {
         if (isQuit.compareAndSet(false, true)) {
             if (isAuthenticated) {
-                write(writeToBuffer(QuitPacket.QUIT, allocate()));
+                writeAllToBuffer(QuitPacket.QUIT, allocate());
                 write(processor.getBufferPool().allocate());
             } else {
                 close();

@@ -109,8 +109,7 @@ public class BlockingSession implements Session {
         final int initCount = target.size();
         if (initCount <= 0) {
             ByteBuffer buffer = source.allocate();
-            buffer = source.writeToBuffer(OkPacket.OK, buffer);
-            source.write(buffer);
+            source.writeAllToBuffer(OkPacket.OK, buffer);
             return;
         }
         commitExecutor.commit(null, this, initCount);

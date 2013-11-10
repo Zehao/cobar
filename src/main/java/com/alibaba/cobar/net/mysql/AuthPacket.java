@@ -110,7 +110,7 @@ public class AuthPacket extends MySQLPacket {
         BufferUtil.writeUB4(buffer, clientFlags);
         BufferUtil.writeUB4(buffer, maxPacketSize);
         buffer.put((byte) charsetIndex);
-        buffer = c.writeToBuffer(FILLER, buffer);
+        buffer = c.writeToBufferWithRemaining(FILLER, buffer);
         if (user == null) {
             buffer = c.checkWriteBuffer(buffer, 1);
             buffer.put((byte) 0);

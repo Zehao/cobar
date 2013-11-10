@@ -56,7 +56,7 @@ public class ManagerQueryHandler implements FrontendQueryHandler {
             SelectHandler.handle(sql, c, rs >>> 8);
             break;
         case ManagerParse.SET:
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
             break;
         case ManagerParse.SHOW:
             ShowHandler.handle(sql, c, rs >>> 8);

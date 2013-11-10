@@ -220,7 +220,7 @@ public class FrontendConnection extends AbstractConnection {
         // 检查schema是否已经设置
         if (schema != null) {
             if (schema.equals(db)) {
-                write(writeToBuffer(OkPacket.OK, allocate()));
+                writeAllToBuffer(OkPacket.OK, allocate());
             } else {
                 writeErrMessage(ErrorCode.ER_DBACCESS_DENIED_ERROR, "Not allowed to change the database!");
             }
@@ -239,7 +239,7 @@ public class FrontendConnection extends AbstractConnection {
         Set<String> schemas = privileges.getUserSchemas(user);
         if (schemas == null || schemas.size() == 0 || schemas.contains(db)) {
             this.schema = db;
-            write(writeToBuffer(OkPacket.OK, allocate()));
+            writeAllToBuffer(OkPacket.OK, allocate());
         } else {
             String s = "Access denied for user '" + user + "' to database '" + db + "'";
             writeErrMessage(ErrorCode.ER_DBACCESS_DENIED_ERROR, s);
@@ -311,11 +311,11 @@ public class FrontendConnection extends AbstractConnection {
     }
 
     public void ping() {
-        write(writeToBuffer(OkPacket.OK, allocate()));
+        writeAllToBuffer(OkPacket.OK, allocate());
     }
 
     public void heartbeat(byte[] data) {
-        write(writeToBuffer(OkPacket.OK, allocate()));
+        writeAllToBuffer(OkPacket.OK, allocate());
     }
 
     public void kill(byte[] data) {

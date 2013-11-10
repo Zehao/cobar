@@ -154,7 +154,7 @@ public class FrontendAuthenticator implements NIOHandler {
             LOGGER.info(s.toString());
         }
         ByteBuffer buffer = source.allocate();
-        source.write(source.writeToBuffer(AUTH_OK, buffer));
+        source.writeAllToBuffer(AUTH_OK, buffer);
     }
 
     protected void failure(int errno, String info) {

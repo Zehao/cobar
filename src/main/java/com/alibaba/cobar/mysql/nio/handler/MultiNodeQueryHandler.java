@@ -269,7 +269,7 @@ public class MultiNodeQueryHandler extends MultiNodeHandler {
                 }
                 eof[3] = ++packetId;
 
-                source.write(source.writeToBuffer(eof, buffer));
+                source.writeAllToBuffer(eof, buffer);
             } catch (Exception e) {
                 LOGGER.warn("exception happens in success notification: " + session.getSource(), e);
             }
@@ -286,14 +286,14 @@ public class MultiNodeQueryHandler extends MultiNodeHandler {
             fieldsReturned = true;
             header[3] = ++packetId;
             ServerConnection source = session.getSource();
-            buffer = source.writeToBuffer(header, buffer);
+            buffer = source.writeToBufferWithRemaining(header, buffer);
             for (int i = 0, len = fields.size(); i < len; ++i) {
                 byte[] field = fields.get(i);
                 field[3] = ++packetId;
-                buffer = source.writeToBuffer(field, buffer);
+                buffer = source.writeToBufferWithRemaining(field, buffer);
             }
             eof[3] = ++packetId;
-            buffer = source.writeToBuffer(eof, buffer);
+            buffer = source.writeToBufferWithRemaining(eof, buffer);
         } finally {
             lock.unlock();
         }
@@ -304,7 +304,7 @@ public class MultiNodeQueryHandler extends MultiNodeHandler {
         lock.lock();
         try {
             row[3] = ++packetId;
-            buffer = session.getSource().writeToBuffer(row, buffer);
+            buffer = session.getSource().writeToBufferWithRemaining(row, buffer);
         } finally {
             lock.unlock();
         }

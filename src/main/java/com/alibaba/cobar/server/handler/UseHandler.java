@@ -41,7 +41,7 @@ public final class UseHandler {
         if (c.getSchema() != null) {
             if (c.getSchema().equals(schema)) {
                 ByteBuffer buffer = c.allocate();
-                c.write(c.writeToBuffer(OkPacket.OK, buffer));
+                c.writeAllToBuffer(OkPacket.OK, buffer);
             } else {
                 c.writeErrMessage(ErrorCode.ER_DBACCESS_DENIED_ERROR, "Not allowed to change the database!");
             }
@@ -63,7 +63,7 @@ public final class UseHandler {
         if (schemas == null || schemas.size() == 0 || schemas.contains(schema)) {
             c.setSchema(schema);
             ByteBuffer buffer = c.allocate();
-            c.write(c.writeToBuffer(OkPacket.OK, buffer));
+            c.writeAllToBuffer(OkPacket.OK, buffer);
         } else {
             String msg = "Access denied for user '" + c.getUser() + "' to database '" + schema + "'";
             c.writeErrMessage(ErrorCode.ER_DBACCESS_DENIED_ERROR, msg);

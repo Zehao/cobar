@@ -32,7 +32,7 @@ public class Ping {
 
     public static void response(FrontendConnection c) {
         if (CobarServer.getInstance().isOnline()) {
-            c.write(c.writeToBuffer(OkPacket.OK, c.allocate()));
+            c.writeAllToBuffer(OkPacket.OK, c.allocate());
         } else {
             error.write(c);
         }
